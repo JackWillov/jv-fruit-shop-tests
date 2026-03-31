@@ -4,11 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StorageTest {
-    private final Storage storage = new Storage();
+    private static Storage storage;
+
+    @BeforeAll
+    static void beforeAll() {
+        storage = new Storage();
+    }
 
     @BeforeEach
     void clearStorage() {

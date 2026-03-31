@@ -6,19 +6,26 @@ import core.basesyntax.model.FruitTransaction;
 import core.basesyntax.strategy.OperationHandler;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class OperationStrategyImplTest {
-    static final Map<FruitTransaction.Operation, OperationHandler> operationHandlers =
-            new HashMap<>();
+    private static Map<FruitTransaction.Operation, OperationHandler> operationHandlers;
+    private static OperationStrategyImpl operationStrategy;
 
-    @Test
-    void get() {
+    @BeforeAll
+    static void beforeAll() {
+        operationHandlers = new HashMap<>();
         operationHandlers.put(FruitTransaction.Operation.BALANCE, new BalanceOperation());
         operationHandlers.put(FruitTransaction.Operation.PURCHASE, new PurchaseOperation());
         operationHandlers.put(FruitTransaction.Operation.RETURN, new ReturnOperation());
         operationHandlers.put(FruitTransaction.Operation.SUPPLY, new SupplyOperation());
-        OperationStrategyImpl operationStrategy = new OperationStrategyImpl(operationHandlers);
+        operationStrategy = new OperationStrategyImpl(operationHandlers);
+
+    }
+
+    @Test
+    void get() {
         FruitTransaction fruitTransaction = new FruitTransaction("b", "apple", 100);
         OperationHandler actualHandler = operationStrategy.get(fruitTransaction.getOperation());
 

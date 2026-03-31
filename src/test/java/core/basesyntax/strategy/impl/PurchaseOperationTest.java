@@ -5,14 +5,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import core.basesyntax.db.Storage;
 import core.basesyntax.model.FruitTransaction;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PurchaseOperationTest {
+    private static Storage storage;
+    private static PurchaseOperation purchaseOperation;
+
+    @BeforeAll
+    static void beforeAll() {
+        storage = new Storage();
+        purchaseOperation = new PurchaseOperation();
+    }
+
+    @BeforeEach
+    void clearStorage() {
+        storage.clear();
+    }
 
     @Test
     void operateNotEnoughFruitsThrowRuntimeException() {
-        PurchaseOperation purchaseOperation = new PurchaseOperation();
-        Storage storage = new Storage();
         storage.set("apple", 20);
         assertThrows(RuntimeException.class, () -> {
             purchaseOperation.operate(
@@ -25,8 +38,6 @@ class PurchaseOperationTest {
 
     @Test
     void operateValidData() {
-        PurchaseOperation purchaseOperation = new PurchaseOperation();
-        Storage storage = new Storage();
         storage.set("apple", 120);
         purchaseOperation.operate(new FruitTransaction("p", "apple", 100), storage);
 

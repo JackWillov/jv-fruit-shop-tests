@@ -2,15 +2,20 @@ package core.basesyntax.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class FruitTransactionTest {
-    private final String expectedFruit = "apple";
-    private final String expectedOperation = "b";
-    private final int expectedQuantity = 12;
+    private static final String expectedFruit = "apple";
+    private static final String expectedOperation = "b";
+    private static final int expectedQuantity = 12;
 
-    private final FruitTransaction fruitTransaction =
-            new FruitTransaction(expectedOperation, expectedFruit, expectedQuantity);
+    private static FruitTransaction fruitTransaction;
+
+    @BeforeAll
+    static void beforeAll() {
+        fruitTransaction = new FruitTransaction(expectedOperation, expectedFruit, expectedQuantity);
+    }
 
     @Test
     void getFruitValidData() {

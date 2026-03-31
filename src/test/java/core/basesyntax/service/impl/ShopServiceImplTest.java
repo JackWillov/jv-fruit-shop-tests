@@ -17,15 +17,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ShopServiceImplTest {
-    static final List<FruitTransaction> transactions = new ArrayList<>();
-    static final Map<FruitTransaction.Operation, OperationHandler> operationHandlers =
-            new HashMap<>();
+    private static List<FruitTransaction> transactions;
+    private static Map<FruitTransaction.Operation, OperationHandler> operationHandlers;
+    private static OperationStrategy operationStrategy;
+    private static Storage storage;
+    private static ShopService shopService;
 
     @BeforeAll
     static void listAndMapFill() {
+        transactions = new ArrayList<>();
+        operationHandlers = new HashMap<>();
+
         transactions.add(new FruitTransaction("b", "banana", 100));
         transactions.add(new FruitTransaction("b", "apple", 0));
         transactions.add(new FruitTransaction("s", "banana", 100));
@@ -38,24 +44,24 @@ class ShopServiceImplTest {
         operationHandlers.put(FruitTransaction.Operation.RETURN, new ReturnOperation());
         operationHandlers.put(FruitTransaction.Operation.SUPPLY, new SupplyOperation());
 
+        operationStrategy = new OperationStrategyImpl(operationHandlers);
+        storage = new Storage();
+        shopService = new ShopServiceImpl(operationStrategy, storage);
+    }
+
+    @BeforeEach
+    void clearStorage() {
+        storage.clear();
     }
 
     @Test
     void processValidData() {
-        OperationStrategy operationStrategy = new OperationStrategyImpl(operationHandlers);
-        Storage storage = new Storage();
-
-        ShopService shopService = new ShopServiceImpl(operationStrategy, storage);
         shopService.process(transactions);
         assertEquals(200, storage.getQuantityByFruit("banana"));
     }
 
     @Test
     void processEdge() {
-        OperationStrategy operationStrategy = new OperationStrategyImpl(operationHandlers);
-        Storage storage = new Storage();
-
-        ShopService shopService = new ShopServiceImpl(operationStrategy, storage);
         shopService.process(transactions);
         assertEquals(0, storage.getQuantityByFruit("apple"));
     }
